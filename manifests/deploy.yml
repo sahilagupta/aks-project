@@ -9,6 +9,9 @@ metadata:
 spec:
   replicas: 1
 
+  strategy:
+    type: RollingUpdate
+
   selector:
     matchLabels:
       app: myproject1
@@ -20,8 +23,18 @@ spec:
 
     spec:
       containers:
-        - name: deployment-cont
-          image: sam15.azurecr.io/first:v1
+      - name: app-container
+        image: sam15.azurecr.io/first:v1
 
-          ports:
-            - containerPort: 80
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 80
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
