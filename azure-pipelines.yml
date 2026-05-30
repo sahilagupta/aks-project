@@ -34,26 +34,26 @@ stages:
         ArtifactName: 'manifests'
         publishLocation: 'Container'
  
-# - stage: deployStage
-#   displayName: deployStage
-#   jobs:
+- stage: deployStage
+  displayName: deployStage
+  jobs:
     
-#     -  deployment: deploy
-#        environment: dev
-#        strategy:
-#         runOnce:
-#             deploy:
-#                 steps:
-#                 - download: current
-#                   artifact: manifests
+    -  deployment: deploy
+       environment: dev
+       strategy:
+        runOnce:
+            deploy:
+                steps:
+                - download: current
+                  artifact: manifests
               
-#                 - task: KubernetesManifest@1
-#                   inputs:
-#                     action: 'deploy'
-#                     connectionType: 'kubernetesServiceConnection'
-#                     kubernetesServiceConnection: 'k8s-connection'
-#                     manifests: '$(Pipeline.Workspace)/manifests/*.yaml'
-#                     containers: 'sam15.azurecr.io/first:$(Build.BuildId)'
+                - task: KubernetesManifest@1
+                  inputs:
+                    action: 'deploy'
+                    connectionType: 'kubernetesServiceConnection'
+                    kubernetesServiceConnection: 'k8s-connection'
+                    manifests: '$(Pipeline.Workspace)/manifests/*.yaml'
+                    containers: 'sam15.azurecr.io/first:$(Build.BuildId)'
 
 
                 
