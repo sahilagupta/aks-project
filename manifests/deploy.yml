@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: app-container
-        image: sam15.azurecr.io/first:v1
+        image: sam15.azurecr.io/first
 
         imagePullPolicy: Always
 
