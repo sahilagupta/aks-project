@@ -1,0 +1,10 @@
+
+
+trigger:
+- none
+
+pool: aks_pool
+
+
+
+
