@@ -52,7 +52,7 @@ stages:
                     action: 'deploy'
                     connectionType: 'kubernetesServiceConnection'
                     kubernetesServiceConnection: 'k8s-connection'
-                    manifests: '$(Pipeline.Workspace)/manifests/*.yaml'
+                    manifests: '$(Pipeline.Workspace)/manifests/*.yml'
                     containers: 'sam15.azurecr.io/first:$(Build.BuildId)'
 
 
