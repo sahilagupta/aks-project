@@ -3,9 +3,12 @@ trigger:
 
 pool: aks_pool
 
+variables:
+  imageName: 'sam15.azurecr.io/first'
+
 stages:
 
-# ================= BUILD STAGE =================
+# ================= BUILD =================
 - stage: buildstage
   displayName: build-stage
   jobs:
@@ -34,15 +37,16 @@ stages:
         ArtifactName: 'manifests'
         publishLocation: 'Container'
 
-# ================= DEPLOY STAGE =================
+# ================= DEPLOY =================
 - stage: deployStage
   displayName: deploy-stage
   dependsOn: buildstage
-  jobs:
 
+  jobs:
   - deployment: deploy
     displayName: deploy-to-aks
     environment: dev
+
     strategy:
       runOnce:
         deploy:
@@ -51,11 +55,22 @@ stages:
           - download: current
             artifact: manifests
 
-          - task: KubernetesManifest@1
+          # ✅ BEST PRACTICE: explicit image update
+          - task: Kubernetes@1
+            displayName: Update Image
             inputs:
-              action: 'deploy'
-              connectionType: 'kubernetesServiceConnection'
-              kubernetesServiceConnection: 'k8s-connection'
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'k8s-connection'
               namespace: 'default'
-              manifests: '$(Pipeline.Workspace)/manifests/*.yml'
-              containers: 'sam15.azurecr.io/first:$(Build.BuildId)'
+              command: 'set'
+              arguments: 'image deployment/project1 app-container=$(imageName):$(Build.BuildId)'
+
+          # ✅ Verify rollout success
+          - task: Kubernetes@1
+            displayName: Rollout Status
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'k8s-connection'
+              namespace: 'default'
+              command: 'rollout'
+              arguments: 'status deployment/project1'
